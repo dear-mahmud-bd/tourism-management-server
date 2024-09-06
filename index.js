@@ -16,6 +16,7 @@ app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.USER}:${process.env.PASS}@cluster0.cbr06.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
+
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
     serverApi: {
@@ -50,7 +51,12 @@ async function run() {
             res.send(result);
         })
 
-
+        app.post('/all-spot', async (req, res) => {
+            const newSpot = req.body;
+            // console.log(newSpot);
+            const result = await spotCollection.insertOne(newSpot);
+            res.send(result);
+        })
 
 
 
