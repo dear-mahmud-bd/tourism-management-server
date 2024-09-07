@@ -36,11 +36,20 @@ async function run() {
 
         const spotCollection = client.db('wanderSEA_DB').collection('all_spot');
 
-        
+
         app.get('/all-spot', async (req, res) => {
-            const cursor = spotCollection.find();
-            const result = await cursor.toArray();
-            res.send(result);
+            const country = req.query.country;
+            if (country) {
+                // console.log("Find-", country);
+                query = { country_Name: { $regex: new RegExp(country, 'i') } };
+                const cursor = spotCollection.find(query);
+                const result = await cursor.toArray();
+                res.send(result);
+            }else{
+                const cursor = spotCollection.find();
+                const result = await cursor.toArray();
+                res.send(result);
+            }
         })
 
         app.get('/all-spot/:_id', async (req, res) => {
@@ -64,9 +73,9 @@ async function run() {
             const userEmail = req.query.user_email;
             // console.log({ user_email: userEmail });
             const query = { user_email: userEmail };
-            const cursor = spotCollection.find(query); 
-            const result = await cursor.toArray(); 
-            res.send(result); 
+            const cursor = spotCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result);
         });
 
         app.put('/all-spot/:_id', async (req, res) => {
@@ -76,23 +85,23 @@ async function run() {
             const updatedSpot = req.body;
             const spot = {
                 $set: {
-                        tourists_spot_name: updatedSpot.tourists_spot_name,
-                        country_Name: updatedSpot.country_Name,
-                        location: updatedSpot.location,
-                        image: updatedSpot.image,
-                        short_description: updatedSpot.short_description,
-                        average_cost: updatedSpot.average_cost,
-                        seasonality: updatedSpot.seasonality,
-                        travel_time: updatedSpot.travel_time,
-                        totalVisitorsPerYear: updatedSpot.totalVisitorsPerYear,
-                        user_email: updatedSpot.user_email,
-                        user_name: updatedSpot.user_name,
+                    tourists_spot_name: updatedSpot.tourists_spot_name,
+                    country_Name: updatedSpot.country_Name,
+                    location: updatedSpot.location,
+                    image: updatedSpot.image,
+                    short_description: updatedSpot.short_description,
+                    average_cost: updatedSpot.average_cost,
+                    seasonality: updatedSpot.seasonality,
+                    travel_time: updatedSpot.travel_time,
+                    totalVisitorsPerYear: updatedSpot.totalVisitorsPerYear,
+                    user_email: updatedSpot.user_email,
+                    user_name: updatedSpot.user_name,
                 }
             };
             const result = await spotCollection.updateOne(filter, spot, options);
             res.send(result);
         })
-        
+
         app.delete('/all-spot/:_id', async (req, res) => {
             const id = req.params._id;
             // console.log(id);
@@ -100,9 +109,9 @@ async function run() {
             const result = await spotCollection.deleteOne(query);
             res.send(result);
         })
-        
-       
-        
+
+
+
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
@@ -123,4 +132,3 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
- 
