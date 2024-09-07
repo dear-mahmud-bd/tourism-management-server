@@ -59,6 +59,14 @@ async function run() {
         })
 
 
+        app.get('/user-spot', async (req, res) => {
+            const userEmail = req.query.user_email;
+            // console.log({ user_email: userEmail });
+            const query = { user_email: userEmail };
+            const cursor = spotCollection.find(query); 
+            const result = await cursor.toArray(); 
+            res.send(result); 
+        });
 
 
 
