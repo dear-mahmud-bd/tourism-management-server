@@ -34,8 +34,14 @@ async function run() {
 
 
 
+        const countryCollection = client.db('wanderSEA_DB').collection('all_country');
         const spotCollection = client.db('wanderSEA_DB').collection('all_spot');
 
+        app.get('/all-country', async (req, res) => {
+            const cursor = countryCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
 
         app.get('/all-spot', async (req, res) => {
             const country = req.query.country;
@@ -45,7 +51,7 @@ async function run() {
                 const cursor = spotCollection.find(query);
                 const result = await cursor.toArray();
                 res.send(result);
-            }else{
+            } else {
                 const cursor = spotCollection.find();
                 const result = await cursor.toArray();
                 res.send(result);
